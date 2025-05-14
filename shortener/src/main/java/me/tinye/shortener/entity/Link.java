@@ -4,12 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "link_tb")
+@Entity(name = "links")
+@Table(name = "links")
 public class Link extends BaseEntity {
 
     @Id
@@ -28,6 +27,6 @@ public class Link extends BaseEntity {
     @Column(name = "access_count")
     private int accessCount = 0;
 
-    @Column
+    @Column(name = "deleted")
     private boolean deleted = false;
 }
