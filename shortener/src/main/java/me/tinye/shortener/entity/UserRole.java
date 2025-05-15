@@ -1,8 +1,11 @@
 package me.tinye.shortener.entity;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
 public enum UserRole {
-    PREMIUM("premium"),
-    USER("user");
+    USER("user"),
+    PREMIUM("premium");
 
     private final String role;
 

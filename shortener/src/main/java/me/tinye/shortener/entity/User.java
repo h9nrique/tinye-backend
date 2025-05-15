@@ -33,7 +33,7 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
 
     @Column(name = "role")
-    private UserRole role = UserRole.USER;
+    private UserRole role;
 
     @Column(name = "deleted")
     private Boolean deleted = false;
