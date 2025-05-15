@@ -2,7 +2,10 @@ package me.tinye.shortener.controller;
 
 import jakarta.validation.Valid;
 import me.tinye.shortener.DTO.LoginDTO;
+import me.tinye.shortener.DTO.LoginResponseDTO;
 import me.tinye.shortener.DTO.RegisterDTO;
+import me.tinye.shortener.entity.User;
+import me.tinye.shortener.infra.security.TokenService;
 import me.tinye.shortener.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,13 +26,17 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginDTO body) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO body) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(body.getEmail(), body.getPassword());
         var auth = authenticationManager.authenticate(usernamePassword);
-        System.out.println("Usuário autenticado: " + auth.getPrincipal());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        String token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return new ResponseEntity<>(new LoginResponseDTO(token), HttpStatus.OK);
     }
 
     @PostMapping("/register")

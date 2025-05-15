@@ -31,7 +31,7 @@ public class LinkController {
         return new ResponseEntity<>(accessLinkResponseDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> deleteLink(@PathVariable("id") Long id) {
         linkService.deleteLink(id);
