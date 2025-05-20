@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.UUID;
 
@@ -11,12 +12,13 @@ import java.util.UUID;
 @Setter
 @Entity(name = "links")
 @Table(name = "links")
+@ToString
 public class Link extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
-    private Long id;
+    private UUID id;
 
     @Column(name = "short_link")
     @NotNull
@@ -28,6 +30,9 @@ public class Link extends BaseEntity {
 
     @Column(name = "access_count")
     private int accessCount = 0;
+
+    @Column(name = "active")
+    private boolean active = true;
 
     @Column(name = "deleted")
     private boolean deleted = false;
