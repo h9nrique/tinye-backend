@@ -6,6 +6,8 @@ import me.tinye.shortener.DTO.LinkResponseDTO;
 import me.tinye.shortener.commom.session.GetUserService;
 import me.tinye.shortener.entity.Link;
 import me.tinye.shortener.entity.User;
+import me.tinye.shortener.exceptions.LinkNotFoundException;
+import me.tinye.shortener.exceptions.UnauthorizedException;
 import me.tinye.shortener.repository.LinkRepository;
 import me.tinye.shortener.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,16 +52,12 @@ public class LinkService {
     public AccessLinkResponseDTO accessLink(String shortLink) {
         Link link = linkRepository.findByShortLink(shortLink);
 
-        if(link == null) {
-            throw new Error("Link não existe");
-        }
-
-        if(link.isDeleted()) {
-            throw new Error("O link foi deletado");
+        if(link == null || link.isDeleted()) {
+            throw new LinkNotFoundException();
         }
 
         if(!link.isActive()) {
-            throw new Error("O link foi desativado");
+            throw new LinkNotFoundException();
         }
 
         link.setAccessCount(link.getAccessCount() + 1);
@@ -73,14 +71,10 @@ public class LinkService {
 
     public void deleteLink(UUID id) {
         User user = userRepository.findByEmail(getUserService.execute().getEmail());
-        Link link = linkRepository.findById(id).orElse(null);
+        Link link = linkRepository.findByIdAndDeletedFalse(id).orElseThrow(LinkNotFoundException::new);
 
-        if (link == null) {
-            throw new Error("Link não existe");
-        }
-
-        if (!link.getUser().getId().equals(user.getId())) {
-            throw new Error("Sem permissão");
+        if (link.getUser() == null || !link.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException();
         }
 
         link.setDeleted(true);
@@ -101,10 +95,10 @@ public class LinkService {
     public LinkResponseDTO changeStatus(UUID id) {
         User user = userRepository.findByEmail(getUserService.execute().getEmail());
         Link link = linkRepository.findByIdAndDeletedFalse(id)
-                .orElseThrow(() -> new Error("Link não existe"));
+                .orElseThrow(LinkNotFoundException::new);
 
-        if (!link.getUser().getId().equals(user.getId())) {
-            throw new Error("Sem permissão");
+        if (link.getUser() == null || !link.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException();
         }
 
         link.setActive(!link.isActive());

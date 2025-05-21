@@ -3,6 +3,7 @@ package me.tinye.shortener.service;
 import me.tinye.shortener.DTO.RegisterDTO;
 import me.tinye.shortener.entity.User;
 import me.tinye.shortener.entity.UserRole;
+import me.tinye.shortener.exceptions.EmailAlreadyRegisteredException;
 import me.tinye.shortener.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,7 @@ public class AuthenticationService {
         UserDetails user = userRepository.findByEmail(body.getEmail());
 
         if(user != null) {
-            throw new Error("Email já cadastrado");
+            throw new EmailAlreadyRegisteredException();
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(body.getPassword());
