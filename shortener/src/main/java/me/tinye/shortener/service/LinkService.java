@@ -7,6 +7,7 @@ import me.tinye.shortener.commom.session.GetUserService;
 import me.tinye.shortener.entity.Link;
 import me.tinye.shortener.entity.User;
 import me.tinye.shortener.exceptions.LinkNotFoundException;
+import me.tinye.shortener.exceptions.MaxLinkLimitException;
 import me.tinye.shortener.exceptions.UnauthorizedException;
 import me.tinye.shortener.repository.LinkRepository;
 import me.tinye.shortener.repository.UserRepository;
@@ -40,6 +41,10 @@ public class LinkService {
 
         if(userAuth != null) {
             User user = userRepository.findByEmail(userAuth.getEmail());
+            List<Link> allLinks = linkRepository.findAllByUserAndDeleted(user, false);
+            if(allLinks.size() >= 10) {
+                throw new MaxLinkLimitException();
+            }
             newLink.setUser(user);
         }
 
