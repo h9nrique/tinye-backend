@@ -52,7 +52,7 @@ Este repositório contém o backend desenvolvido com **Java + Spring Boot**, res
 
 | Método   | Rota                | Descrição                             | Body / Parâmetro                |
 |----------|---------------------|----------------------------------------|----------------------------------|
-| POST     | `/`                 | Cria um novo link curto                | `{ "url": "https://exemplo.com" }` |
+| POST     | `/`                 | Cria um novo link curto                | `{ "originalLink": "https://exemplo.com" }` |
 | GET      | `/{shortLink}`      | Retorna a URL original do link curto   | `shortLink` (string)             |
 | DELETE   | `/{id}`             | Deleta um link do usuário              | `id` (UUID)                      |
 | GET      | `/links`           | Lista todos os links do usuário        | —                                |
